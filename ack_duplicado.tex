@@ -1,9 +1,24 @@
-%Este arquivo deve ser alterado pelos integrantes da respectiva equipe com o conteudo indicado abaixo.
+%Equipe: Vinicius, Luis Ribeiro
+%Livro: Seção 5.3.2, p.131
+
 \subsection{ACKs Duplicados}
-Equipe: Vinicius, Luis Ribeiro
+A modelagem do protocolo TCP é feita sobre o algoritmo de controle congestionamento TCP Reno.
+Neste algoritmo, após o \textit{Slow Start}, a tamanho da janela de congestionamento ($W$) é 
+incrementado em $1/W$ a cada \textit{ACK} recebido e decrementado a cada indicação de perda 
+de pacote percebida. O valor da redução no tamanho da janela varia de acordo com o tipo de indicação de
+perda de pacote: triplo \textit{ACK} duplicado ou \textit{timeout}. No primeiro caso o tamanho
+da janela é dividido pela metade do seu valor corrente, no segundo a janela é reduzida a um 
+pacote. Nesta seção consideraremos que perdas de pacotes são indicadas apenas por triplos 
+\textit{ACK's} duplicados (TD).
 
-Livro: Seção 5.3.2, p.131
+O comportamento do protocolo TCP é modelado em termos de rodadas (\textit{rounds}). Uma rodada
+se inicia com a transmissão de $W$ pacotes de uma janela. Uma vez que todos os pacotes tenham sido 
+transmitidos, o remetente passa a aguardar a recepção de \textit{ACK's}. O recebimento do primeiro 
+\textit{ACK} marca o fim da rodada atual e início da próxima. Note que a cada rodada o tamanho da 
+janela é incrementado em um pacote.
 
-Inserir no arquivo \textbf{ack\_duplicado.tex} a descrição do modelo TCP para indicação de perda de 
-pacote por Tripo ACK Duplicado.
+A figura XXX apresenta o comportamento de uma conexão TCP, descrito acima, em mais detalhes. Defini-se 
+período TD (TDP) como o intervalo entre duas indicações de perda de pacote por triplo \textit{ACK} 
+duplicado (TD). Durante este intervalo, o tamanho da janela é incrementado de uma unidade. No fim de 
+cada TDP$_{i}$ o tamanho da janela é dividido ao meio.
 
