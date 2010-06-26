@@ -55,4 +55,4 @@ set label "W3" at graph 0.885, graph 0.9
 
 #plot	"ratio_cd_pkt_all_1.dat" using 1:2:4 notitle with yerrorbars ls 1, \
 #plot	"teste.dat" using 1:2 smooth unique title "Janela" with lines ls 1
-plot 	"tdp_macro.dat" using 1:2 title "" with steps
+plot 	"tdp_macro.dat" using 1:2 notitle with steps
