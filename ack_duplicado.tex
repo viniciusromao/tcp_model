@@ -17,8 +17,16 @@ transmitidos, o remetente passa a aguardar a recepção de \textit{ACK's}. O rec
 \textit{ACK} marca o fim da rodada atual e início da próxima. Note que a cada rodada o tamanho da 
 janela é incrementado em um pacote.
 
-A figura XXX apresenta o comportamento de uma conexão TCP, descrito acima, em mais detalhes. Defini-se 
+A figura \ref{fig:tdp_macro} apresenta o comportamento de uma conexão TCP, descrito acima, em mais detalhes. Defini-se 
 período TD (TDP) como o intervalo entre duas indicações de perda de pacote por triplo \textit{ACK} 
-duplicado (TD). Durante este intervalo, o tamanho da janela é incrementado de uma unidade. No fim de 
-cada TDP$_{i}$ o tamanho da janela é dividido ao meio.
+duplicado (TD). Durante este intervalo, o tamanho da janela é incrementado de uma unidade a cada rodada. 
+No fim de cada TDP$_{i}$ o tamanho da janela é dividido ao meio.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.8]{./figs/tdp_macro.pdf}
+  \label{fig:tdp_macro}
+  \caption{Evoluçao do tamanho da janela quando perdas de pacotes sao TDs.}
+\end{figure}
+
 
