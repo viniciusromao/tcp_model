@@ -3,7 +3,7 @@
 
 \subsection{ACKs Duplicados}
 A modelagem do protocolo TCP é feita sobre o algoritmo de controle congestionamento TCP Reno.
-Neste algoritmo, após o \textit{Slow Start}, a tamanho da janela de congestionamento ($W$) é 
+Neste algoritmo, após o \textit{Slow Start}, o tamanho da janela de congestionamento ($W$) é 
 incrementado em $1/W$ a cada \textit{ACK} recebido e decrementado a cada indicação de perda 
 de pacote percebida. O valor da redução no tamanho da janela varia de acordo com o tipo de indicação de
 perda de pacote: triplo \textit{ACK} duplicado ou \textit{timeout}. No primeiro caso o tamanho
@@ -17,16 +17,16 @@ transmitidos, o remetente passa a aguardar a recepção de \textit{ACK's}. O rec
 \textit{ACK} marca o fim da rodada atual e início da próxima. Note que a cada rodada o tamanho da 
 janela é incrementado em um pacote.
 
-A figura \ref{fig:tdp_macro} apresenta o comportamento de uma conexão TCP, descrito acima, em mais detalhes. Defini-se 
-período TD (TDP) como o intervalo entre duas indicações de perda de pacote por triplo \textit{ACK} 
+A figura \ref{fig:tdp_macro} apresenta o comportamento de uma conexão TCP, descrito acima, em mais detalhes. 
+Defini-se período TD (TDP) como o intervalo entre duas indicações de perda de pacote por triplo \textit{ACK} 
 duplicado (TD). Durante este intervalo, o tamanho da janela é incrementado de uma unidade a cada rodada. 
 No fim de cada TDP$_{i}$ o tamanho da janela é dividido ao meio.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.8]{./figs/tdp_macro.pdf}
+  \caption{Evolução do tamanho da janela quando perdas de pacotes são TDs.}
   \label{fig:tdp_macro}
-  \caption{Evoluçao do tamanho da janela quando perdas de pacotes sao TDs.}
 \end{figure}
 
 
