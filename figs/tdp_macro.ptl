@@ -1,0 +1,58 @@
+#Output format
+#set terminal postscript eps color "ArialMT" 20
+set terminal postscript eps color "Lucida" 18
+
+#Output file
+set output 'tdp_macro.eps'
+set encoding iso_8859_1
+
+#Grid lines configurations
+set grid ytics lt 0 lw 1 lc rgb "#cccccc"
+set grid xtics lt 0 lw 1 lc rgb "#cccccc"
+
+#Line style, refered by the index in plot cmd
+set style line 1 lt 1 lw 2 lc 1 
+set style line 2 lt 1 lw 2 lc 1
+set style line 3 lt 5 lw 2 lc 3
+set style line 4 lt 8 lw 2 lc 7 ps 5
+set pointsize 1.5 
+
+#set autoscale y
+set xrange [0:26]
+set yrange [0:16]
+#set xtics 1
+#set autoscale xy
+#set xrange [0:60]
+#set xtics 1
+set ytics 1
+set xtics ("TDP1                    " 9, "TDP2           " 14, "TDP3                    " 24)
+
+#Axis' names
+set xlabel "Tempo"
+set ylabel "Janela (W)"
+
+set key box width 5
+set key right top
+
+# Right example
+#plot    "count_ctrl_pkt.dat" using 1:2:3 notitle with yerrorbars ls 1, \
+#	"count_ctrl_pkt.dat" using 1:2 smooth unique title "Smallnet" with lines ls 1
+
+#Drawing the tree curves with confidence interval
+#plot    "ratio_cd_pkt.dat" using 1:2:4 notitle with yerrorbars ls 1, \
+#	"ratio_cd_pkt.dat" using 1:2 smooth unique title "Ratio" with lines ls 2, \
+#	"ratio_cd_pkt_all.dat" using 1:2:4 notitle with yerrorbars ls 1, \
+#	"ratio_cd_pkt_all.dat" using 1:2 smooth unique title "Ratio" with lines ls 3, \
+#	"ratio_cd_pkt_all.dat" using 1:2:4 notitle with yerrorbars ls 1, \
+#	"ratio_cd_pkt_all_1.dat" using 1:2 smooth unique title "Ratio" with lines ls 4
+
+#plot	"ratio_cd_pkt_all_1.dat" using 1:2:4 notitle with yerrorbars ls 1, \
+#	"ratio_cd_pkt_all_1.dat" using 1:2 smooth unique title "Razao(pacotes) Controle/Dados" with lines ls 1
+
+set label "W1" at graph 0.31, graph 0.78
+set label "W2" at graph 0.5, graph 0.653
+set label "W3" at graph 0.885, graph 0.9
+
+#plot	"ratio_cd_pkt_all_1.dat" using 1:2:4 notitle with yerrorbars ls 1, \
+#plot	"teste.dat" using 1:2 smooth unique title "Janela" with lines ls 1
+plot 	"tdp_macro.dat" using 1:2 title "" with steps
