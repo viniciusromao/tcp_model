@@ -29,6 +29,23 @@ No fim de cada TDP$_{i}$ o tamanho da janela é dividido ao meio.
   \label{fig:tdp_macro}
 \end{figure}
 
+O objetivo é encontrar o taxa de transferência de dados no estado estacionário. Assim, para o $i$-ésimo 
+período TD (TDP$_{i}$) define-se Y$_i$ como a quantidade de pacotes enviados no período, A$_i$ a duração 
+do período e W$_i$ o tamanho da janela no final do período. Dessa forma, a taxa média de tranferência é
+dada pela divisão entre o número médio (esperança) de pacotes transmitidos em um TDP pelo tempo médio 
+(esperança) de duração de um intervalo TD, ver \eqref{eq:throughput}.
+
+\begin{equation} \label{eq:throughput}
+\overline{X}=\frac{E[Y]}{E[A]}
+\end{equation}
+
+Agora torna-se necessário deduzir expressões para $Y$ e $A$ a fim de deterninar $\overline{X}$. Assim, 
+analisemos em mais detalhes um intervalo TDP$_i$, ver figura \ref{fig:tdp_detalhe}.
+Um período TD se inicia logo após uma indicação de perda de pacote por triplo \textit{ACK} duplicado, 
+onde o tamanho da janela corrente passa a ser a metade do tamanho da janela anterior $W_{i-1} / 2$. 
+Depois disso, a janela é incrementada a cada rodada até que uma nova perda seja identificada por triplo 
+\textit{ACK} duplicado. Denota-se por $\alpha_i$ o primeiro pacote perdido e por R$_i$ a rodada onde a 
+perda acorreu. 
 
 \begin{figure}[ht]
   \centering
@@ -36,3 +53,61 @@ No fim de cada TDP$_{i}$ o tamanho da janela é dividido ao meio.
   \caption{Pacotes enviados durante um período TD (TDP$_{i}$).}
   \label{fig:tdp_detalhe}
 \end{figure}
+
+Para calcularmos a quantidade de pacotes transmitidos em um TDP$_i$, é necessário descobrirmos quantos pacotes
+são enviados após o $\alpha_i$. Assim, digamos que na janela W$_i$, $\alpha_i$ seja o $n$-ésimo pacote a ser
+enviado (ver figura \ref{fig:tdp_detalhe}). Logo, ainda na mesma rodada  são transmitidos $W_i - n$ pacotes 
+imediatamente após $\alpha_i$. Como antes de $\alpha_i$ foram corretamente enviados e reconhecidos $n - 1$ pacotes 
+na rodada R$_i$, na última rodada ainda são transmitidos $n - 1$ pacotes. Assim o número total de pacotes enviados
+após $\alpha_i$ é: $W_i - n + n -1 = W_i - 1$. Daí, temos que o número total de pacotes transmitidos em um
+TDP$_i$ é dado por: $Y_i = \alpha_i + W_i - 1$. Das propriedades da Esperança, temos \eqref{eq:EY1}.
+
+\begin{equation} \label{eq:EY1}
+E[Y]=E[\alpha] + E[W] - 1
+\end{equation}
+
+Precisa-se calcular $E[\alpha]$. Considerando que a perda de um pacote em um round é independente da perda de 
+pacotes em quaisquer outros rounds, \{$\alpha_i$\}$_i$ é uma variável aleatória identicamente distribuída. 
+Isto é, o número de pacotes $\alpha_i$ transmitidos em um TDP$_i$ é independente da quantidade de pacotes
+transmitidos em outros períodos. Assim, a probabilidade de $\alpha_i = k$ é igual a probabilidade de que
+exatamente $k - 1$ pacotes sejam transmitidos corretamente até que um pacote seja perdido, ver 
+\eqref{eq:P_alpha}.
+
+\begin{equation} \label{eq:P_alpha}
+P[\alpha=k]=(1 - p)^{k - 1} * p
+\end{equation}
+
+A esperança ou média de $\alpha$ é dada por \eqref{eq:E_alpha}.
+
+\begin{align} \label{eq:E_alpha}
+\nonumber E[\alpha] &= \sum_{k=1}^\infty (1 - p)^{k - 1} * p * k \\
+\nonumber &= \sum_{k=1}^\infty \frac{(1 - p)^{k}}{1 - p} * p * k\\ 
+\nonumber &= \frac{p}{1 - p} * \sum_{k=1}^\infty (1 - p)^k * k \\ 
+\nonumber &= \frac{p}{1 - p} * \frac{1 - p}{(1 - (1 - p))^2} \\
+&= \frac{1}{p}
+\end{align}
+
+Substituindo \eqref{eq:E_alpha} em \eqref{eq:EY1} temos \eqref{eq:EY2}, abaixo:
+
+\begin{align} \label{eq:EY2}
+\nonumber E[Y] &= E[\alpha] + E[W] - 1 \\
+&= \frac{1 - p}{p} + E[W]
+\end{align}
+
+Pode-se obter uma outra expressão para o número de pacotes transmitidos ($Y$) analisando
+a evolução do tamanho da janela de transmissão ($W$) durante as rodadas de um TDP$_i$.
+Na primeira rodada de um novo período TD o tamanho da janela de transmissão é a metade
+do tamanho da janela anterior (ver figura \ref{fig:tdp_detalhe}). Depois o tamanho da janela
+é incrementado a cada rodada até a perda do primeiro pacote em R{$_i$}. Assim, o tamanho 
+final da janela (W$_i$) é dado por \eqref{eq:Wi}.
+
+\begin{equation} \label{eq:Wi}
+Wi=\frac{W_{i-1}}{2} + R_i
+\end{equation}
+
+Tomando a esperança em ambos os lados de \eqref{eq:Wi} temos \eqref{eq:EW1}.
+
+\begin{align} \label{eq:EW1}
+\nonumber & E[W]=\frac{E[W]}{2} + E[R] \\
+& E[W]= 2 * E[R]
+\end{align}

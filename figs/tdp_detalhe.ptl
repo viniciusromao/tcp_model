@@ -119,7 +119,7 @@ set label "2" at 3.35, -0.5
 set label "3" at 4.35, -0.5
 set label "4" at 5.35, -0.5
 set label ". . . . ." at 7.35, -0.5
-set label "X_i" at 12.35, -0.5
+set label "R_i" at 12.35, -0.5
 
 set arrow from 13.5,-0.75 to 13.5,-0.1 head ls 4
 set arrow from 13.5,-0.75 to 13.7,-0.75 nohead ls 4
