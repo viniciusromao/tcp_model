@@ -60,7 +60,10 @@ enviado (ver figura \ref{fig:tdp_detalhe}). Logo, ainda na mesma rodada  são tr
 imediatamente após $\alpha_i$. Como antes de $\alpha_i$ foram corretamente enviados e reconhecidos $n - 1$ pacotes 
 na rodada R$_i$, na última rodada ainda são transmitidos $n - 1$ pacotes. Assim o número total de pacotes enviados
 após $\alpha_i$ é: $W_i - n + n -1 = W_i - 1$. Daí, temos que o número total de pacotes transmitidos em um
-TDP$_i$ é dado por: $Y_i = \alpha_i + W_i - 1$. Das propriedades da Esperança, temos \eqref{eq:EY1}.
+TDP$_i$ é dado por: $Y_i = \alpha_i + W_i - 1$. 
+
+Considerando que $\alpha$ e $W$ são independentes entre si,
+pode-se utilizar a esperança obtendo \eqref{eq:EY1}.
 
 \begin{equation} \label{eq:EY1}
 E[Y]=E[\alpha] + E[W] - 1
@@ -105,9 +108,58 @@ final da janela (W$_i$) é dado por \eqref{eq:Wi}.
 Wi=\frac{W_{i-1}}{2} + R_i
 \end{equation}
 
-Tomando a esperança em ambos os lados de \eqref{eq:Wi}, temos \eqref{eq:EW1}.
+Considerando que \{W$_i$\} e \{R$_i$\} são variáveis independentes, pode-se utilizar a 
+esperança em ambos os lados de \eqref{eq:Wi} obtendo \eqref{eq:EW1}.
 
 \begin{align} \label{eq:EW1}
 \nonumber & E[W]=\frac{E[W]}{2} + E[R] \\
 & E[W]= 2 * E[R]
 \end{align}
+
+A quantidade de pacotes transmitidos (Y$_i$) durante um TDP$_i$ pode ser calculada somando-se 
+a número de pacotes enviados em cada uma de suas rodadas. O número de pacotes enviados por 
+rodada é indicado pelo tamanho da janela de transmissão que é icrementada de uma unidade a 
+cada rodada até a perda do primeiro pacote na rodada R$_i$. Na rodada seguinte, última rodada 
+em TDP$_i$, apenas $\beta_i$ pacotes são transmitidos em resposta aos pacotes corretamente 
+enviados antes da perda no round R$_i$. Assim, o somatório dos tamanhos das janelas em um 
+TDP$_i$ indica a quantidade de pacotes transmitidos, ver \eqref{eq:Y2}.
+
+\begin{align} \label{eq:Y2}
+\nonumber Y_i &= \sum_{k = 0}^{R_i - 1} (\frac{W_{i - 1}}{2} + k) + \beta_i \\
+\nonumber &= \sum_{k = 0}^{R_i - 1} \frac{W_{i - 1}}{2} + \sum_{k = 0}^{R_i - 1} k + \beta_i \\
+\nonumber &= R_i * \frac{W_{i - 1}}{2} + \frac{R_i - 1}{2} * R_i + \beta_i \\
+\nonumber &= \frac{R_i}{2} * (W_{i - 1} + R_i - 1) + \beta_i \text{ , de \eqref{eq:Wi} temos:$R_i = W_i - W_{i-1}/2$} \\
+\nonumber &= \frac{R_i}{2} * (W_{i - 1} + W_i - \frac{W_{i-1}}{2} - 1) + \beta_i \\
+&= \frac{R_i}{2} * (\frac{W_{i-1}}{2} + W_i - 1) + \beta_i 
+\end{align}
+
+Considerando que o número de rodadas é independente do tamanho da janela, pode-se utilizar
+a esperança em cada variável de \eqref{eq:Y2}, obtendo \eqref{eq:EY3}.
+
+\begin{equation} \label{eq:EY3}
+E[Y] = \frac{E[R]}{2} * (\frac{E[W]}{2} + E[W] - 1) + E[\beta] 
+\end{equation}
+
+Considerando que o número de pacotes enviados na última rodada é uniformemente distribuído entre
+1 e $W_i - 1$, temos $E[\beta] = E[W]/2$. Esta consideração é válida porque todos os pacotes tem 
+a mesma probabilidade $p$ de serem perdidos. Além disso, de \eqref{eq:EW1} temos que: $E[R]=E[W]/2$.
+Substituindo estes resultados em \eqref{eq:EY3}, obtemos \eqref{eq:EY4}
+
+\begin{equation} \label{eq:EY4}
+E[Y] = \frac{E[W]}{4} * (\frac{E[W]}{2} + E[W] - 1) + \frac{E[W]}{2}
+\end{equation}
+
+Igualando \eqref{eq:EY2} e \eqref{eq:EY4}, temos \eqref{eq:EW2}:
+
+\begin{align} \label{eq:EW2}
+\nonumber & \frac{1 - p}{p} + E[W] = \frac{E[W]}{4} * (\frac{E[W]}{2} + E[W] - 1) + \frac{E[W]}{2} \\
+\nonumber & \frac{1 - p}{p} + E[W] = \frac{E[W]^2}{8} + \frac{E[W]^2}{4} - \frac{E[W]}{4} + \frac{E[W]}{2} \\
+\nonumber & \frac{E[W]^2}{8} + \frac{E[W]^2}{4} - \frac{E[W]}{4} + \frac{E[W]}{2} - E[W] + \frac{p - 1}{p} = 0 \text{   $(*8)$}\\
+& 3E[W]^2 - 6E[W] - \frac{8(p - 1)}{p} = 0
+\end{align}
+
+Calculando a raiz da equação \eqref{eq:EW2} e selecionando a positiva, temos \eqref{eq:EW3}:
+\begin{equation} \label{eq:EW3}
+E[W] = 1 + \sqrt{\frac{8}{3p} - \frac{5}{3}}
+\end{equation}
+
