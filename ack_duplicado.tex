@@ -63,18 +63,18 @@ após $\alpha_i$ é: $W_i - n + n -1 = W_i - 1$. Daí, temos que o número total
 TDP$_i$ é dado por: $Y_i = \alpha_i + W_i - 1$. 
 
 Considerando que $\alpha$ e $W$ são independentes entre si,
-pode-se utilizar a esperança obtendo \eqref{eq:EY1}.
+pode-se utilizar a esperança obtendo-se \eqref{eq:EY1}.
 
 \begin{equation} \label{eq:EY1}
 E[Y]=E[\alpha] + E[W] - 1
 \end{equation}
 
-Precisa-se calcular $E[\alpha]$. Considerando que a perda de um pacote em um round é independente da perda de 
-pacotes em quaisquer outros rounds, \{$\alpha_i$\}$_i$ é uma variável aleatória identicamente distribuída. 
-Isto é, o número de pacotes $\alpha_i$ transmitidos em um TDP$_i$ é independente da quantidade de pacotes
-transmitidos em outros períodos. Assim, a probabilidade de $\alpha_i = k$ é igual a probabilidade de que
-exatamente $k - 1$ pacotes sejam transmitidos corretamente até que um pacote seja perdido, ver 
-\eqref{eq:P_alpha}.
+Precisa-se calcular $E[\alpha]$. Seja $p$ a probabilidade de perca de um pacote. Considerando que a perda 
+de um pacote em um round é independente da perda de pacotes em quaisquer outros rounds, \{$\alpha_i$\}$_i$ 
+é uma variável aleatória identicamente distribuída. Isto é, o número de pacotes $\alpha_i$ transmitidos 
+em um TDP$_i$ é independente da quantidade de pacotes transmitidos em outros períodos. Assim, a 
+probabilidade de $\alpha_i = k$ é igual a probabilidade de que exatamente $k - 1$ pacotes sejam 
+transmitidos corretamente até que um pacote seja perdido, ver \eqref{eq:P_alpha}.
 
 \begin{equation} \label{eq:P_alpha}
 P[\alpha=k]=(1 - p)^{k - 1} * p
@@ -129,37 +129,73 @@ TDP$_i$ indica a quantidade de pacotes transmitidos, ver \eqref{eq:Y2}.
 \nonumber &= \sum_{k = 0}^{R_i - 1} \frac{W_{i - 1}}{2} + \sum_{k = 0}^{R_i - 1} k + \beta_i \\
 \nonumber &= R_i * \frac{W_{i - 1}}{2} + \frac{R_i - 1}{2} * R_i + \beta_i \\
 \nonumber &= \frac{R_i}{2} * (W_{i - 1} + R_i - 1) + \beta_i \text{ , de \eqref{eq:Wi} temos:$R_i = W_i - W_{i-1}/2$} \\
-\nonumber &= \frac{R_i}{2} * (W_{i - 1} + W_i - \frac{W_{i-1}}{2} - 1) + \beta_i \\
-&= \frac{R_i}{2} * (\frac{W_{i-1}}{2} + W_i - 1) + \beta_i 
+\nonumber &= \frac{R_i}{2} * \left(W_{i - 1} + W_i - \frac{W_{i-1}}{2} - 1\right) + \beta_i \\
+&= \frac{R_i}{2} * \left(\frac{W_{i-1}}{2} + W_i - 1\right) + \beta_i 
 \end{align}
 
 Considerando que o número de rodadas é independente do tamanho da janela, pode-se utilizar
 a esperança em cada variável de \eqref{eq:Y2}, obtendo \eqref{eq:EY3}.
 
 \begin{equation} \label{eq:EY3}
-E[Y] = \frac{E[R]}{2} * (\frac{E[W]}{2} + E[W] - 1) + E[\beta] 
+E[Y] = \frac{E[R]}{2} * \left(\frac{E[W]}{2} + E[W] - 1\right) + E[\beta] 
 \end{equation}
 
 Considerando que o número de pacotes enviados na última rodada é uniformemente distribuído entre
 1 e $W_i - 1$, temos $E[\beta] = E[W]/2$. Esta consideração é válida porque todos os pacotes tem 
 a mesma probabilidade $p$ de serem perdidos. Além disso, de \eqref{eq:EW1} temos que: $E[R]=E[W]/2$.
-Substituindo estes resultados em \eqref{eq:EY3}, obtemos \eqref{eq:EY4}
+Substituindo estes resultados em \eqref{eq:EY3}, obtemos \eqref{eq:EY4}.
 
 \begin{equation} \label{eq:EY4}
-E[Y] = \frac{E[W]}{4} * (\frac{E[W]}{2} + E[W] - 1) + \frac{E[W]}{2}
+E[Y] = \frac{E[W]}{4} * \left(\frac{E[W]}{2} + E[W] - 1\right) + \frac{E[W]}{2}
 \end{equation}
 
-Igualando \eqref{eq:EY2} e \eqref{eq:EY4}, temos \eqref{eq:EW2}:
+Igualando \eqref{eq:EY2} e \eqref{eq:EY4}, temos \eqref{eq:EW2}.
 
 \begin{align} \label{eq:EW2}
-\nonumber & \frac{1 - p}{p} + E[W] = \frac{E[W]}{4} * (\frac{E[W]}{2} + E[W] - 1) + \frac{E[W]}{2} \\
+\nonumber & \frac{1 - p}{p} + E[W] = \frac{E[W]}{4} * \left(\frac{E[W]}{2} + E[W] - 1\right) + \frac{E[W]}{2} \\
 \nonumber & \frac{1 - p}{p} + E[W] = \frac{E[W]^2}{8} + \frac{E[W]^2}{4} - \frac{E[W]}{4} + \frac{E[W]}{2} \\
 \nonumber & \frac{E[W]^2}{8} + \frac{E[W]^2}{4} - \frac{E[W]}{4} + \frac{E[W]}{2} - E[W] + \frac{p - 1}{p} = 0 \text{   $(*8)$}\\
 & 3E[W]^2 - 6E[W] - \frac{8(p - 1)}{p} = 0
 \end{align}
 
-Calculando a raiz da equação \eqref{eq:EW2} e selecionando a positiva, temos \eqref{eq:EW3}:
+Calculando a raiz da equação \eqref{eq:EW2} e selecionando a positiva, temos \eqref{eq:EW3}.
 \begin{equation} \label{eq:EW3}
 E[W] = 1 + \sqrt{\frac{8}{3p} - \frac{5}{3}}
 \end{equation}
 
+Para determinar a taxa de transmissão é necessário calcular ainda o tempo médio de duração de um intervalo 
+TD ($E[A]$), ver \eqref{eq:throughput}. A duração de um intervalo TD (TDP) é dado pelo somatório dos tempos
+das rodadas que o compõe. Definindo rtt$_{ij}$ como a duração (\textit{round trip time}) da j-ésima rodada
+de TDP$_i$, obtemos \eqref{eq:A}.
+
+\begin{align} \label{eq:A}
+\nonumber A_i &= \sum_{j=1}^{R_i + 1} rtt_{ij} \\
+&=(R_i + 1) * rtt_{ij}
+\end{align}
+
+Denotando RTT como o tempo médio de duração de uma rodada, temos que: $E[rtt]=RTT$. Considerando que a duração
+de uma rodada (rtt) e o número de rodadas são variáveis independentes pode-se tomar a esperança em \eqref{eq:A}
+obtendo-se \eqref{eq:EA1}.
+
+\begin{equation} \label{eq:EA1}
+E[A] = (E[R] + 1) * RTT
+\end{equation}
+
+Subtituindo \eqref{eq:EW1} e \eqref{eq:EW3} em \eqref{eq:EA1} e desenvolvendo obtem-se \eqref{eq:EA2}.
+
+\begin{align} \label{eq:EA2}
+\nonumber E[A] &= (E[R] + 1) * RTT \\
+\nonumber &= \left(\frac{E[W]}{2} + 1\right) * RTT \\
+\nonumber &= \left(\left(\frac{1}{2} * \left(1 + \sqrt{\frac{8}{3p} - \frac{5}{3}}\right)\right) + 1\right) * RTT \\
+\nonumber &= \left(\frac{1}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} + 1\right) * RTT \\
+&= RTT * \left(\frac{3}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} \right)
+\end{align}
+
+Finalmente, substituindo \eqref{eq:EY2}, \eqref{eq:EW3} e \eqref{eq:EA2} em \eqref{eq:throughput} obtem-se em
+\eqref{eq:throughput2} a taxa de transmissão média em função da probabilidade $p$ de perda de pacote.
+
+\begin{align} \label{eq:throughput2}
+\nonumber \overline{X} &= \frac{E[Y]}{E[A]} \\
+\nonumber &=\frac{\frac{1 - p}{p} + 1 + \sqrt{\frac{8}{3p} - \frac{5}{3}}}{RTT * \left(\frac{3}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} \right)} \\
+&=\frac{\frac{1}{p} + \sqrt{\frac{8}{3p} - \frac{5}{3}}}{RTT * \left(\frac{3}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} \right)}
+\end{align}
