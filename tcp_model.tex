@@ -1,9 +1,30 @@
+
 \documentclass[12pt]{article}
 
 \usepackage{sbc-template}
 
-\usepackage{graphicx,url}
-\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{graphicx}
+
+
+\usepackage{amsmath,amsfonts,amsthm,amssymb}         % fontes matemáticas, teoremas e etc.
+\usepackage{latexsym}                                % mais símbolos matemáticos
+\usepackage{cancel}
+%\usepackage[portugues,algoruled,lined]{algorithm2e}  % excelente ambiente p/ escrever algoritmos
+\usepackage{tabularx}                                % tabelas com diversas formas
+\usepackage{multicol}                                % tabelas com multiplas colunas
+\usepackage{multirow}                                % tabelas com multiplas linhas
+\usepackage{booktabs}                                % tabelas profissionais
+\usepackage{longtable}                               % tabelas longas
+\usepackage{dcolumn}                                 % tipos especiais de colunas
+\usepackage{lscape}                                  % página no formato paisagem
+\usepackage{graphicx}                                % diversas configurações de imagens
+\usepackage[normalem]{ulem}
+\usepackage{fancyhdr}
+
+\usepackage{geometry}
+\usepackage{chngpage}
+
 
 \usepackage[brazil]{babel}   
 \usepackage[utf8]{inputenc}
@@ -54,6 +75,9 @@ tamanho da janela pelo destinatário.
 \input{ack_duplicado.tex}
 \input{timeout.tex}
 \input{janela_destino.tex}
+
+\bibliographystyle{plain}	% (uses file "plain.bst")
+\bibliography{tcp}		% expects file "myrefs.bib"
 
 
 \end{document}

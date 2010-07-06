@@ -1,8 +1,311 @@
 %Este arquivo deve ser alterado pelos integrantes da respectiva equipe com o conteudo indicado abaixo.
 \subsection{Timeouts}
-Equipe: Alisson, Anderson
 
-Livro: Seção 5.3.2, p.134
+Ainda não incluimos os efeitos dos timeouts na modelagem do TCP. Mas, esses efeitos têm que ser levados em conta, visto que ocorrem frequentemente. Muitas implementações de TCP dividem o tamanho da janela após receberem três ACKs duplicados. Entretanto, se um transmissor não recebe qualquer ACK duplicado, ou recebe menos do que três, um pacote é tido como perdido somente através do estouro do temporizador de retransmissão, o timeout. Quando ocorre um timeout, o tamanho da janela é reduzido para um e o limite da fase de partida lenta é mudado para a metade do tamanho da janela antes de a perda ter acontecido. O pacote perdido é retransmitido e o temporizador é mudado para o dobro do período de timeout anterior. Como ocorrem atrasos significativos na espera do timeout, a taxa de envio do TCP é significativamente reduzida. \cite{hassan2004high} e \cite{padhye1998modeling} adaptaram o modelo detalhado de perdas de pacotes para demonstrar essa consequência.
 
-Inserir no arquivo \textbf{timeout.tex} a descrição do modelo TCP para indicação de perda de pacote por Timeout.
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{figs/timeout.pdf} 
+\caption{Intervalos que constituem a dinâmica da janela em um ciclo incluindo um período de timeout}
+\label{fig5.3}
+\end{center}
+\end{figure}
 
+A figura \ref{fig5.3} mostra os intervalos que formam o período $S_i$. Assim, temos:
+
+$$S_i = Z_i^{TD} + Z_i^{TO}$$
+
+O intervalo $Z_i^{TD}$ inclui os períodos onde as perdas são descobertas por ACKs duplicados, enquanto $Z_i^{TO}$ refere-se ao período em que os sinais de timeouts são recebidos. Define-se $M_i$ como o número total de pacotes enviados durante o intervalo $S_i$. Dessa forma, a taxa média de transmissão do TCP é dada por:
+
+$$\overline{X} = \frac{E[M]}{E[S]} $$
+
+Usando uma notação similar à da seção anterior para os períodos dos triplos ACKs duplicados (TDPs), em que $Y_{ij}$ é o número de pacotes enviados e $A_{ij}$ representa a duração de cada um dos períodos onde as perdas são detectadas por ACKs duplicados, e introduzindo a variável $Y_i^{TO}$ para representar o número de pacotes enviados durante os períodos de timeouts, as variáveis $M_i$ e $S_i$ são dadas por:
+
+$$M_i = \sum_{j=1}^{n_i}Y_{ij} + Y_i^{TO} \ \ \ \  (5.21)$$ 
+$$S_i = \sum_{j=1}^{n_i}A_{ij} + Z_i^{TO} \ \ \ \  (5.22)$$ 
+
+onde $n_i$ é o número de TDPs. Assumindo que $n_i$ é independente do número de pacotes em cada intervalo, temos:
+
+$$E[M] = E[n]E[Y] + E[Y^{TO}] $$
+$$E[S] = E[n]E[A] + E[Z^{TO}] \ \ \ \ (5.23)$$
+
+Porque somente um período de timeout ocorre para cada $S_i$, a probabilidade Q que uma perda de pacote resulte em um período de timeout é dada por $Q = 1/E[n]$; além disso, nós podemos escrever a taxa de transmissão como:
+
+$$\overline{X} = \frac{E[n]E[Y] + E[Y^{TO}]}{E[n]E[A] + E[Z^{TO}]} $$
+$$= \frac{\cancel{E[n]}(E[Y] + \frac{E[Y^{TO}]}{E[n]})}{\cancel{E[n]}(E[A] + \frac{E[Z^{TO}]}{E[n]})} $$
+$$= \frac{E[Y] + Q.E[Y^{TO}]}{E[A] + Q.E[Z^{TO}]} $$ ,onde $E[Y^{TO}] = E[R]$. Portanto, temos:
+$$= \frac{E[Y] + Q.E[R]}{E[A] + Q.E[Z^{TO}]} \ \ \ \ (5.24)$$
+
+Agora, precisamos saber as quantidades $Q, E[Y^{TO}] \  e \ E[Z^{TO}]$.
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=1.0]{figs/timeout2.pdf} 
+\caption{Pacote e transmissões de ACKs precedendo uma indicação de perda}
+\label{fig4}
+\end{center}
+\end{figure}
+
+Nós começamos por derivar uma expressão para Q. Considere a rodada de pacotes onde uma indicação de perda ocorre; isso será referenciado como a penúltima rodada (ver figura \ref{fig4} - Nessa figura cada ACK reconhece pacotes individuais). Deixe $w$ ser o tamanho da janela de congestionamento. Os pacotes $f_1..f_w$ são transmitidos na penúltima rodada. Os pacotes $f_1..f_k$ são reconhecidos e o pacote $f_{k+1}$ é o primeiro a ser perdido (ou não reconhecido). Assume-se que quando um pacote é perdido, todos os outros na sequência e na mesma rodada também são perdidos. Assim, todos os pacotes que seguem $f_{k+1}$ na penúltima rodada também são perdidos. Entretanto, como os pacotes $f_1..f_k$ são reconhecidos, então outros $k$ pacotes $s_1..s_k$ são transmitidos na próxima rodada, que é referenciada como a última rodada. Esta rodada de pacotes pode ter outra perda, diga-se $s_{m+1}$. Assim, $s_{m+2}..s_k$ também são perdidos na última rodada. Os $m$ pacotes transmitidos com sucesso na última rodada são respondidos por ACKs para o pacote $f_k$, que são contados como ACKs duplicados. Dessa maneira, o número de ACKs duplicados é igual ao número de pacotes recebidos com sucesso na última rodada. Se o número de ACKs é maior do que três, então ocorre uma indicação de perda por ACKs duplicados, senão, um timeout ocorre. Em ambos os casos, o período atual entre as perdas, TDP, finaliza. Denota-se por $A(w,k)$ a probabilidade que os primeiros $k$ pacotes sejam reconhecidos numa rodada de $w$ pacotes, dado que existe uma sequência de uma ou mais perdas na rodada. Então:
+
+$$A(w, k) = \frac{(1-p)^kp}{1-(1-p)^w} $$
+
+onde:
+
+$p$ é a probabilidade de perda. \\
+$(1-p)^k$ é a probabilidade de sucesso, k vezes. \\
+$(1-p)^w$ é a probabilidade de sucesso, w vezes. \\
+$1 - (1-p)^w$ é a probabilidade de uma ou mais perdas numa rodada de $w$ pacotes. \\
+
+Também, define-se $C(n,m)$ como a probabilidade que $m$ pacotes sejam reconhecidos em sequência na última rodada (onde $n$ pacotes são transmitidos) e o resto dos pacotes na rodada, se houver, são perdidos. Então,
+
+$$C(n,m) = \begin{cases} 
+  (1-p)^mp,  \ \  m \leq n - 1 \ \ \ \ houve \ perda\\
+  (1-p)^n,  \ \  m = n \ \ \ \ somente \ sucesso\\
+\end{cases}
+ $$
+
+Então, $\hat{Q}(w)$, a probabilidade que uma perda numa janela de tamanho $w$ seja por timeout, é dada por:
+
+$$\hat{Q}(w) = \begin{cases} 
+  1,  \ \ se \ w \leq 3 \ \ \ \ n\tilde{a}o \ tem \ como \ ter \ TD, \ ent\tilde{a}o \ \acute{e} \ TO\\
+  \underbrace{\sum_{k=0}^2A(w,k)}_{garante \ w \ > \ 3.} + \underbrace{\sum_{k=3}^wA(w,k)}_{houve \ perda.}.\underbrace{\sum_{m=0}^2C(k,m)}_{se \ m \ > \ 3 \ \acute{e} \ TD.},  \ \  caso \ contr\acute{a}rio \ \ \ \ \\
+\end{cases}
+ $$
+
+Assim, um timeout ocorre se o número de pacotes transmitidos corretamente na penúltima rodada, $k$, é menor que três, ou se o número de pacotes transmitidos com sucesso na última rodada, $m$, é menor que três. Também, devido à suposição que o pacote $s_{m+1}$ é perdido independentemente do pacote $f_{k+1}$ (eles ocorrem em diferentes rodadas), a probabilidade que exista uma perda em $f_{k+1}$ na penúltima rodada e uma perda em $s_{m+1}$ na última rodada é igual a $A(w,k)*C(k,m)$.
+
+Agora, iremos resolver o segundo caso de $\hat{Q}(w)$:
+
+$$ X = \underbrace{\sum_{k=0}^2A(w,k)}_{(I)} + \underbrace{\sum_{k=3}^wA(w,k)}_{(II)}.\underbrace{\sum_{m=0}^2C(k,m)}_{(III)}$$
+
+Tendo em mente que para uma PG finita de razão $\neq$ 1, o $\sum_{k=0}^nx^k = \dfrac{x^{n+1}-1}{x-1}$.
+
+Para I, temos:
+
+$$\sum_{k=0}^2A(w,k) =  \sum_{k=0}^2\frac{(1-p)^kp}{1-(1-p)^w}$$
+$$ = \frac{p}{1-(1-p)^w} \cdot\sum_{k=0}^2(1-p)^k$$
+$$ = \frac{p}{1-(1-p)^w}\cdot \frac{(1-p)^3 -1}{(1-p) - 1}\cdot\frac{(-1)}{(-1)}$$
+$$ = \frac{p}{1-(1-p)^w} \cdot \frac{1 - (1-p)^3}{p}$$
+$$ = \frac{1 - (1-p)^3}{1-(1-p)^w}$$
+
+Para III, temos:
+
+$$\sum_{m=0}^{2}C(k,m) = \sum_{m=0}^{2}(1-p)^mp $$
+$$ = p \cdot \sum_{m=0}^{2}(1-p)^m $$
+$$ = p \cdot \frac{(1-p)^3 - 1}{(1-p) - 1} $$
+$$ = p \cdot \frac{1- (1-p)^3}{p} $$
+$$ = 1- (1-p)^3 $$
+
+Para II, temos: 
+
+$$\sum_{k=3}^{w}A(w,k) =  \sum_{k=3}^{w}\frac{(1-p)^kp}{1-(1-p)^w}$$
+$$ = \frac{p}{1-(1-p)^w} \cdot \underbrace{\sum_{k=3}^{w}(1-p)^k}_{(IV)} $$
+
+Para IV, temos:
+
+$$\sum_{k=3}^{w}(1-p)^k = \sum_{k=0}^{w}(1-p)^k - \sum_{k=0}^{2}(1-p)^k$$
+$$= \frac{(1-p)^{w+1}-1}{(1-p)-1} - \frac{(1-p)^{3}-1}{(1-p)-1}$$
+$$= \frac{1 - (1-p)^{w+1}}{p} - \frac{1 - (1-p)^{3}}{p}$$
+$$= \frac{(1-p)^3 - (1-p)^{w+1}}{p}$$
+$$= \frac{(1-p)^3 \cdot (1 - (1-p)^{w-2})}{p}$$
+
+Voltando para II:
+
+$$\frac{p}{1-(1-p)^w} \cdot \frac{(1-p)^3 \cdot (1 - (1-p)^{w-2})}{p} $$
+$$ = \frac{(1-p)^3 \cdot (1 - (1-p)^{w-2})}{1-(1-p)^w} $$
+
+Dessa maneira:
+
+$$X = \frac{1- (1-p)^3}{1 - (1-p)^w} + \frac{(1-p)^3 \cdot (1 - (1-p)^{w-2})}{1-(1-p)^w} \cdot (1-(1-p)^3)$$
+$$ = \frac{(1-(1-p)^3)\cdot (1 + (1-p)^3\cdot (1 - (1-p)^{w-2}))}{1 - (1-p)^w}$$
+
+Portanto, 
+
+$$ \hat{Q}(w) = min(1, \frac{(1-(1-p)^3)\cdot (1 + (1-p)^3\cdot (1 - (1-p)^{w-2}))}{1 - (1-p)^w}) $$
+
+Agora, podemos aplicar a regra de L'Hopital para simplificarmos a segunda parte de $\hat{Q}(w)$, quando as perdas são tão pequenas que tendem a zero.
+
+Para aplicarmos a regra de L'Hopital,  $f(x)$ e $g(x)$ precisam ser funções diferenciáveis, com $g'(x) \neq 0, \ \forall x$. Além disso, se $\lim_{x \to p}f(x) = 0$ e $\lim_{x \to p}g(x) = 0$, então, se existir $\lim_{x \to p}\frac{f'(x)}{g'(x)}$, temos que:
+
+$$\lim_{x \to p}\frac{f(x)}{g(x)} = \lim_{x \to p}\frac{f'(x)}{g'(x)}$$
+
+Quando as perdas de pacotes tendem a zero, podemos aplicar:
+
+$$\lim_{p \to 0}\frac{(1-(1-p)^3)\cdot (1 + (1-p)^3\cdot (1 - (1-p)^{w-2}))}{1 - (1-p)^w} = x $$
+$$x = \lim_{p \to 0}\frac{\overbrace{[(1-(1-p)^3)\cdot (1 + (1-p)^3\cdot (1 - (1-p)^{w-2}))]'}^{f'(x)}}{\underbrace{[1 - (1-p)^w]'}_{g'(x))}}$$
+
+Para $f'(x)$, temos:
+
+$$f'(x) = [(1-(1-p)^3)\cdot (1 + (1-p)^3\cdot (1 - (1-p)^{w-2}))]'$$
+$$= (1-(1-p)^3)\cdot \underbrace{[(1 + (1-p)^3\cdot (1 - (1-p)^{w-2}))]'}_{(i)} + \underbrace{[(1-(1-p)^3)]'}_{(ii)} \cdot(1 + (1-p)^3\cdot (1 - (1-p)^{w-2}))$$
+
+Para $i$, temos:
+
+$$[(1 + (1-p)^3\cdot (1 - (1-p)^{w-2}))]' =  (1)' + [(1-p)^3\cdot (1 - (1-p)^{w-2})]'$$
+$$=  0 + (1-p)^3\cdot \underbrace{[(1 - (1-p)^{w-2}))]'}_{(iii)} + [(1-p)^3]'\cdot (1 - (1-p)^{w-2})$$
+
+Para $iii$, temos:
+
+$$[(1 - (1-p)^{w-2}))]' = (1)' - [(1-p)^{w-2})]') $$
+$$ = 0 - (w-2)(1-p)^{w-3})) $$
+$$ = (2-w)(1-p)^{w-3} $$
+
+Voltando para $i$:
+
+$$ (1-p)^3\cdot (2-w)(1-p)^{w-3} + 3(1-p)^2\cdot (1 - (1-p)^{w-2})$$
+$$= (1-p)^w(2-w) + 3(1-p)^2 - 3(1-p)^2(1-p)^{w-2}$$
+$$= (1-p)^w(2-w) + 3(1-p)^2 - 3(1-p)^w$$
+$$= (1-p)^w(2-w -3) + 3(1-p)^2$$
+$$= (1-p)^w(-w -1) + 3(1-p)^2$$
+
+Para $ii$, temos:
+
+$$[1-(1-p)^3]' = 0 - [(1-p)^3]' $$
+$$= - 3(1-p)^2 $$
+
+Então, 
+
+$$f'(x) = (1 - (1-p)^3)[(1-p)^w(-w-1) + 3(1-p)^2] - 3(1-p)^2(1+(1-p)^3(1-(1-p)^{w-2})) $$
+$$= (1-p)^w(-w-1) + \cancel{3(1-p)^2} - (1-p)^{w+3}(-w-1) - 3(1-p)^5 \cancel{- 3(1-p)^2} - 3(1-p)^5(1-(1-p)^{w-2}) $$
+$$= (1-p)^{w-1}[(1-p)(-w-1) - (1-p)^4(-w-1) - 3(1-p)^{6-w} - 3(1-p)^{6-w}(1-(1-p)^{w-2})]$$
+
+Para $g'(x)$, temos:
+
+$$g'(x) = [1 - (1-p)^w]' $$
+$$ = (1)' - [(1-p)^w]' $$
+$$ = 0 - w(1-p)^{w-1} $$
+$$ = - w(1-p)^{w-1} $$
+
+Portanto, 
+
+$$x = \lim_{p \to 0}\frac{\cancel{(1-p)^{w-1}}[(1-p)(-w-1) - (1-p)^4(-w-1) - 3(1-p)^{6-w} - 3(1-p)^{6-w}(1-(1-p)^{w-2})]}{- w\cancel{(1-p)^{w-1}}} $$
+
+Fazendo $p = 0$, temos:
+
+$$x = \frac{[(1-0)(-w-1) - (1-0)^4(-w-1) - 3(1-0)^{6-w} - 3(1-0)^{6-w}(1-(1-0)^{w-2})]}{- w} $$
+$$= \frac{\cancel{(1)(-w-1)} \cancel{- (1)(-w-1)} - 3(1) - \cancel{3(1)(0)}}{- w} $$
+$$= \frac{- 3(1)}{- w} $$
+$$= \frac{3}{w} $$
+
+Numericamente nós achamos uma aproximação muito boa de $\hat{Q}$ que é:
+
+$$\hat{Q}(w) \approx min(1, \frac{3}{w}) $$
+
+Q, a probabilidade de que uma indicação de perda seja por timeout, é:
+
+$$Q = \sum_{w=1}^{\infty}\hat{Q}(w)P[W = w] = E[\hat{Q}]$$
+
+Nós aproximamos 
+
+$$Q \approx \hat{Q}(E[W])$$
+
+A próxima derivação a ser considerada é a de $E[Y^{TO}]$ ou $E[R]$. Para isso, precisamos da distribuição de probabilidade do número de timeouts em uma sequência de TO, dado que exista um TO. Observou-se que, em muitos dos \textit{traces} do TCP, um pacote é transmitido entre dois timeouts em sequência. Assim, uma sequência de $k$ TOs ocorre quando existem $k - 1$ perdas consecutivas (a primeira perda já foi contada) seguidas por um pacote transmitido corretamente. Consequentemente, o número de TOs numa sequência de TOs tem uma distribuição geométrica, e portanto
+
+$$P[R = k] = \underbrace{p^{k-1}}_{k-1 \ perdas.} \cdot \underbrace{(1-p)}_{um \ sucesso.} $$
+
+Tendo em vista que para uma PG infinita de razão $|x|<1, \ \sum_{k=1}^{\infty}kx^k = \frac{x}{(1-x)^2} $, nós podemos computar a média de R
+
+$$E[R] = \sum_{k=1}^{\infty}kP[R=k]$$
+$$= \sum_{k=1}^{\infty}kp^{k-1}(1-p)$$
+$$= (1-p)\cdot \sum_{k=1}^{\infty}kp^{k-1}$$
+$$= \frac{(1-p)}{p}\cdot \sum_{k=1}^{\infty}kp^{k}$$
+$$= \frac{(1-p)}{p}\cdot \frac{p}{(1-p)^2}$$
+$$= \frac{1}{(1-p)}$$
+
+No próximo passo, nos concentramos no $E[Z^{TO}]$, a duração média de uma sequência de timeouts excluindo as restransmissões, que podem ser computadas de uma maneira parecida. Sabe-se que os primeiros seis timeouts em uma sequência tem o tamanho $2^{i-1}T_o$, $i = 1...6$, com todos os timeouts seguintes tendo tamanho $64T_o$. Então, a duração de uma sequência com $k$ timeouts é
+
+$$L_k = \begin{cases} 
+  (2^k - 1)T_o,  \ \  para \  k \leq 6 \\
+  (63 + 64(k-6))T_o,  \ \ para  \ k \geq 7\\
+\end{cases} $$
+
+e a média de $Z^{TO}$ é
+
+$$E[Z^{TO}] = \sum_{k=1}^{\infty}L_kP[R=k] $$
+$$=  \sum_{k=1}^{6}(2^k -1)T_op^{k-1}(1-p) + \sum_{k=7}^{\infty}(63+64(k-6))T_op^{k-1}(1-p)$$
+$$=  T_o(1-p) \cdot [\underbrace{\sum_{k=1}^{6}(2^k -1)p^{k-1}}_{(1)} + \underbrace{\sum_{k=7}^{\infty}(63+64(k-6))p^{k-1}}_{(2)}] $$
+
+Para 2, temos:
+
+$$\sum_{k=7}^{\infty}(63+64(k-6))p^{k-1} = \underbrace{\sum_{k=7}^{\infty}63p^{k-1}}_{(3)} + \underbrace{\sum_{k=7}^{\infty}64(k-6)p^{k-1}}_{(4)} $$
+
+Para 3, temos:
+
+$$\sum_{k=7}^{\infty}63p^{k-1} = \frac{63}{p}\cdot \sum_{k=7}^{\infty}p^{k} $$
+$$ = \frac{63}{p}\cdot [\sum_{k=0}^{\infty}p^{k} - \sum_{k=0}^{6}p^{k}] $$
+$$ = \frac{63}{p}\cdot [\frac{1}{(1-p)} - (1 + \frac{p - p^7}{1-p})] $$
+$$ = \frac{63}{p}\cdot [\frac{1}{(1-p)} - (\frac{1 - p^7}{1-p})] $$
+$$ = \frac{63}{p}\cdot [\frac{p^7}{(1-p)}] $$
+$$ = \frac{63p^6}{(1-p)} $$
+
+Para 4, temos:
+
+$$\sum_{k=7}^{\infty}64(k-6)p^{k-1} =  \frac{64}{p} \cdot \sum_{k=7}^{\infty}(k-6)p^{k}$$
+$$ =  \frac{64}{p} \cdot [\underbrace{\sum_{k=7}^{\infty}kp^{k}}_{(5)} - \underbrace{6 \cdot \sum_{k=7}^{\infty}p^{k}}_{(6)}]  $$
+
+Para 5, temos:
+
+$$\sum_{k=7}^{\infty}kp^{k} =  \sum_{k=1}^{\infty}kp^{k} - \sum_{k=1}^{6}kp^{k}$$
+$$ =  \frac{p}{(1-p)^2} - \frac{p - 7p^7 + 6p^8}{(1-p)^2} $$
+$$ =  \frac{7p^7 - 6p^8}{(1-p)^2} $$
+
+Para 6 e aplicando o que vimos em 3, temos:
+
+$$6 \cdot \sum_{k=7}^{\infty}p^{k} = \frac{6p^7}{(1-p)} $$
+
+Voltando para 4, temos:
+
+$$\frac{64}{p}\cdot [\frac{p}{(1-p)} \cdot (\frac{7p^6 - 6p^7}{(1-p)} - 6p^6] $$
+$$= \frac{64}{(1-p)}\cdot [\frac{7p^6 - 6p^7}{(1-p)} - 6p^6] $$
+$$= \frac{64p^6}{(1-p)}\cdot [\frac{7 - 6p}{(1-p)} - 6] $$
+$$= \frac{64p^6}{(1-p)}\cdot \frac{7 - 6p - (6 - 6p)}{(1-p)} $$
+$$= \frac{64p^6}{(1-p)^2} $$
+
+Voltando para 2, temos:
+
+$$ \frac{63p^6}{(1-p)} +  \frac{64p^6}{(1-p)^2}$$
+$$= \frac{p^6}{(1-p)} \cdot (63 + \frac{64}{(1-p)}) $$
+$$= \frac{p^6}{(1-p)} \cdot (\frac{63 - 63p + 64}{(1-p)}) $$
+$$= \frac{p^6(127 - 63p)}{(1-p)^2} $$
+
+Para 1, temos:
+
+$$\sum_{k=1}^{6}(2^k -1)p^{k-1} = \frac{1}{p}\cdot \sum_{k=1}^{6}(2^k -1)p^{k}$$
+$$ = \frac{1}{p}\cdot [\underbrace{\sum_{k=1}^{6}(2p)^{k}}_{(7)} - \underbrace{\sum_{k=1}^{6}p^{k}}_{(8)}]$$
+
+Para 7, temos:
+
+$$\sum_{k=1}^{6}(2p)^{k} = 2p + 4p^2 + 8p^3 + 16p^4 + 32p^5 + 64p^6 $$
+
+Para 8, temos:
+
+$$\sum_{k=1}^{6}p^{k} = \sum_{k=0}^{6}p^{k} - 1$$
+$$= \frac{p^7 -1}{p-1}\cdot \frac{(-1)}{(-1)} - 1$$
+$$= \frac{1 - p^7}{(1-p)} - 1$$
+$$= \frac{1 - p^7 - (1-p)}{(1-p)} $$
+$$= \frac{- p^7 +p}{(1-p)} $$
+
+Voltando para 1, temos:
+
+$$\frac{1}{p} \cdot [p(2 + 4p + 8p^2 + 16p^3 + 32p^4 64p^5) - p \cdot (\frac{-p^6 + 1}{1-p})] $$
+$$= 2 + 4p + 8p^2 + 16p^3 + 32p^4 64p^5 + \frac{p^6 - 1}{1-p} $$
+$$= \frac{2 - 2p + 4p - 4p^2 + 8p^2 - 8p^3 + 16p^3 - 16p^4 + 32p^4 - 32p^5 + 64p^5 - 64p^6 + p^6 -1}{1-p} $$
+$$= \frac{1 + 2p + 4p^2 + 8p^3 + 16p^4 + 32p^5 - 63p^6}{1-p} $$
+
+Portanto, temos que $E[Z^{TO}]$ é:
+
+$$E[Z^{TO}] = T_o(1-p) \cdot [\frac{1}{(1-p)} \cdot (1 + 2p + 4p^2 + 8p^3 + 16p^4 + 32p^5 - 63p^6) + \frac{1}{(1-p)} \cdot (\frac{p^6(127 - 63p)}{(1-p)})] $$
+$$ = T_o \cdot (1 + 2p + 4p^2 + 8p^3 + 16p^4 + 32p^5 - 63p^6 + \frac{p^6(127 - 63p)}{(1-p)}) $$
+$$ = \frac{T_o(1 - p +2p - 2p^2 + 4p^2 - 4p^3 + 8p^3 - 8p^4 + 16p^4 - 16p^5 + 32p^5 -32p^6 - 63p^6 + 63p^7 + 127p^6 - 63p^7)}{1-p} $$
+$$ = T_o \cdot \frac{1+p+2p^2 + 4p^3 + 8p^4 + 16p^5 + 32p^6}{1-p}$$
+
+Onde $f(p) = 1+p+2p^2 + 4p^3 + 8p^4 + 16p^5 + 32p^6$. Assim, 
+
+$$E[Z^{TO}] =  T_o \cdot \frac{f(p)}{1-p}$$
+
+
+Agora, munido de todas as derivações, podemos finalizar a taxa de transmissão TCP como:
+
+$$ \overline{X}(p) = \frac{E[Y] + Q.E[R]}{E[A] + Q.E[Z^{TO}]}$$
+$$ = \frac{\frac{1-p}{p}+E[W] + Q(E[W])\frac{1}{1-p} } { RTT(E[X] + 1) + Q(E[W])T_o\frac{f(p)}{1-p}} $$
