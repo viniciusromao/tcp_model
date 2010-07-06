@@ -1,6 +1,6 @@
 all: figures
 	pdflatex tcp_model.tex
-#	bibtex tcp_model
+	bibtex tcp_model
 	pdflatex tcp_model.tex
 	pdflatex tcp_model.tex 
 
