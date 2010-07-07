@@ -12,6 +12,6 @@ clean:
 	rm -rf *.pdf
 	rm -rf *.log
 	rm -rf *.aux
-	rm -rf figs/*.pdf
+	#rm -rf figs/*.pdf
 	rm -f figs/tdp_macro.eps
 	rm -f figs/tdp_detalhe.eps
