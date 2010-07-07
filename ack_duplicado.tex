@@ -17,15 +17,15 @@ transmitidos, o remetente passa a aguardar a recepção de \textit{ACK's}. O rec
 \textit{ACK} marca o fim da rodada atual e início da próxima. Note que a cada rodada o tamanho da 
 janela é incrementado em um pacote.
 
-A figura \ref{fig:tdp_macro} apresenta o comportamento de uma conexão TCP, descrito acima, em mais detalhes. 
-Defini-se período TD (TDP) como o intervalo entre duas indicações de perda de pacote por triplo \textit{ACK} 
+A Figura \ref{fig:tdp_macro} apresenta o comportamento de uma conexão TCP, descrito acima, em mais detalhes. 
+Define-se período TD (TDP) como o intervalo entre duas indicações de perda de pacote por triplo \textit{ACK} 
 duplicado (TD). Durante este intervalo, o tamanho da janela é incrementado de uma unidade a cada rodada. 
 No fim de cada TDP$_{i}$ o tamanho da janela é dividido ao meio.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.8]{./figs/tdp_macro.pdf}
-  \caption{Evolução do tamanho da janela quando perdas de pacotes são TDs.}
+  \caption{Evolução do tamanho da janela entre perdas de pacotes indicadas por TDs.}
   \label{fig:tdp_macro}
 \end{figure}
 
@@ -39,8 +39,8 @@ dada pela divisão entre o número médio (esperança) de pacotes transmitidos e
 \overline{X}=\frac{E[Y]}{E[A]}
 \end{equation}
 
-Agora torna-se necessário deduzir expressões para $Y$ e $A$ a fim de deterninar $\overline{X}$. Assim, 
-analisemos em mais detalhes um intervalo TDP$_i$, ver figura \ref{fig:tdp_detalhe}.
+Agora torna-se necessário deduzir expressões para $Y$ e $A$ a fim de determinar $\overline{X}$. Assim, 
+analisemos em mais detalhes um intervalo TDP$_i$, ver Figura \ref{fig:tdp_detalhe}.
 Um período TD se inicia logo após uma indicação de perda de pacote por triplo \textit{ACK} duplicado, 
 onde o tamanho da janela corrente passa a ser a metade do tamanho da janela anterior $W_{i-1} / 2$. 
 Depois disso, a janela é incrementada a cada rodada até que uma nova perda seja identificada por triplo 
@@ -56,7 +56,7 @@ perda acorreu.
 
 Para calcularmos a quantidade de pacotes transmitidos em um TDP$_i$, é necessário descobrirmos quantos pacotes
 são enviados após o $\alpha_i$. Assim, digamos que na janela W$_i$, $\alpha_i$ seja o $n$-ésimo pacote a ser
-enviado (ver figura \ref{fig:tdp_detalhe}). Logo, ainda na mesma rodada  são transmitidos $W_i - n$ pacotes 
+enviado (ver Figura \ref{fig:tdp_detalhe}). Logo, ainda na mesma rodada  são transmitidos $W_i - n$ pacotes 
 imediatamente após $\alpha_i$. Como antes de $\alpha_i$ foram corretamente enviados e reconhecidos $n - 1$ pacotes 
 na rodada R$_i$, na última rodada ainda são transmitidos $n - 1$ pacotes. Assim o número total de pacotes enviados
 após $\alpha_i$ é: $W_i - n + n -1 = W_i - 1$. Daí, temos que o número total de pacotes transmitidos em um
@@ -77,16 +77,16 @@ probabilidade de $\alpha_i = k$ é igual a probabilidade de que exatamente $k - 
 transmitidos corretamente até que um pacote seja perdido, ver \eqref{eq:P_alpha}.
 
 \begin{equation} \label{eq:P_alpha}
-P[\alpha=k]=(1 - p)^{k - 1} * p
+P[\alpha=k]=(1 - p)^{k - 1} \cdot p
 \end{equation}
 
 A esperança ou média de $\alpha$ é dada por \eqref{eq:E_alpha}.
 
 \begin{align} \label{eq:E_alpha}
-\nonumber E[\alpha] &= \sum_{k=1}^\infty (1 - p)^{k - 1} * p * k \\
-\nonumber &= \sum_{k=1}^\infty \frac{(1 - p)^{k}}{1 - p} * p * k\\ 
-\nonumber &= \frac{p}{1 - p} * \sum_{k=1}^\infty (1 - p)^k * k \\ 
-\nonumber &= \frac{p}{1 - p} * \frac{1 - p}{(1 - (1 - p))^2} \\
+\nonumber E[\alpha] &= \sum_{k=1}^\infty (1 - p)^{k - 1} \cdot  p \cdot  k \\
+\nonumber &= \sum_{k=1}^\infty \frac{(1 - p)^{k}}{1 - p} \cdot  p \cdot  k\\ 
+\nonumber &= \frac{p}{1 - p} \cdot  \sum_{k=1}^\infty (1 - p)^k \cdot  k \\ 
+\nonumber &= \frac{p}{1 - p} \cdot  \frac{1 - p}{(1 - (1 - p))^2} \\
 &= \frac{1}{p}
 \end{align}
 
@@ -100,7 +100,7 @@ Substituindo \eqref{eq:E_alpha} em \eqref{eq:EY1}, temos \eqref{eq:EY2}.
 Pode-se obter uma outra expressão para o número de pacotes transmitidos ($Y$) analisando
 a evolução do tamanho da janela de transmissão ($W$) durante as rodadas de um TDP$_i$.
 Na primeira rodada de um novo período TD o tamanho da janela de transmissão é a metade
-do tamanho da janela anterior (ver figura \ref{fig:tdp_detalhe}). Depois o tamanho da janela
+do tamanho da janela anterior (ver Figura \ref{fig:tdp_detalhe}). Depois o tamanho da janela
 é incrementado a cada rodada até a perda do primeiro pacote em R{$_i$}. Assim, o tamanho 
 final da janela (W$_i$) é dado por \eqref{eq:Wi}.
 
@@ -113,7 +113,7 @@ esperança em ambos os lados de \eqref{eq:Wi} obtendo \eqref{eq:EW1}.
 
 \begin{align} \label{eq:EW1}
 \nonumber & E[W]=\frac{E[W]}{2} + E[R] \\
-& E[W]= 2 * E[R]
+& E[W]= 2 \cdot  E[R]
 \end{align}
 
 A quantidade de pacotes transmitidos (Y$_i$) durante um TDP$_i$ pode ser calculada somando-se 
@@ -127,17 +127,17 @@ TDP$_i$ indica a quantidade de pacotes transmitidos, ver \eqref{eq:Y2}.
 \begin{align} \label{eq:Y2}
 \nonumber Y_i &= \sum_{k = 0}^{R_i - 1} (\frac{W_{i - 1}}{2} + k) + \beta_i \\
 \nonumber &= \sum_{k = 0}^{R_i - 1} \frac{W_{i - 1}}{2} + \sum_{k = 0}^{R_i - 1} k + \beta_i \\
-\nonumber &= R_i * \frac{W_{i - 1}}{2} + \frac{R_i - 1}{2} * R_i + \beta_i \\
-\nonumber &= \frac{R_i}{2} * (W_{i - 1} + R_i - 1) + \beta_i \text{ , de \eqref{eq:Wi} temos:$R_i = W_i - W_{i-1}/2$} \\
-\nonumber &= \frac{R_i}{2} * \left(W_{i - 1} + W_i - \frac{W_{i-1}}{2} - 1\right) + \beta_i \\
-&= \frac{R_i}{2} * \left(\frac{W_{i-1}}{2} + W_i - 1\right) + \beta_i 
+\nonumber &= R_i \cdot  \frac{W_{i - 1}}{2} + \frac{R_i - 1}{2} \cdot  R_i + \beta_i \\
+\nonumber &= \frac{R_i}{2} \cdot  (W_{i - 1} + R_i - 1) + \beta_i \text{ , de \eqref{eq:Wi} temos:$R_i = W_i - W_{i-1}/2$} \\
+\nonumber &= \frac{R_i}{2} \cdot  \left(W_{i - 1} + W_i - \frac{W_{i-1}}{2} - 1\right) + \beta_i \\
+&= \frac{R_i}{2} \cdot  \left(\frac{W_{i-1}}{2} + W_i - 1\right) + \beta_i 
 \end{align}
 
 Considerando que o número de rodadas é independente do tamanho da janela, pode-se utilizar
 a esperança em cada variável de \eqref{eq:Y2}, obtendo \eqref{eq:EY3}.
 
 \begin{equation} \label{eq:EY3}
-E[Y] = \frac{E[R]}{2} * \left(\frac{E[W]}{2} + E[W] - 1\right) + E[\beta] 
+E[Y] = \frac{E[R]}{2} \cdot  \left(\frac{E[W]}{2} + E[W] - 1\right) + E[\beta] 
 \end{equation}
 
 Considerando que o número de pacotes enviados na última rodada é uniformemente distribuído entre
@@ -146,15 +146,15 @@ a mesma probabilidade $p$ de serem perdidos. Além disso, de \eqref{eq:EW1} temo
 Substituindo estes resultados em \eqref{eq:EY3}, obtemos \eqref{eq:EY4}.
 
 \begin{equation} \label{eq:EY4}
-E[Y] = \frac{E[W]}{4} * \left(\frac{E[W]}{2} + E[W] - 1\right) + \frac{E[W]}{2}
+E[Y] = \frac{E[W]}{4} \cdot  \left(\frac{E[W]}{2} + E[W] - 1\right) + \frac{E[W]}{2}
 \end{equation}
 
 Igualando \eqref{eq:EY2} e \eqref{eq:EY4}, temos \eqref{eq:EW2}.
 
 \begin{align} \label{eq:EW2}
-\nonumber & \frac{1 - p}{p} + E[W] = \frac{E[W]}{4} * \left(\frac{E[W]}{2} + E[W] - 1\right) + \frac{E[W]}{2} \\
+\nonumber & \frac{1 - p}{p} + E[W] = \frac{E[W]}{4} \cdot  \left(\frac{E[W]}{2} + E[W] - 1\right) + \frac{E[W]}{2} \\
 \nonumber & \frac{1 - p}{p} + E[W] = \frac{E[W]^2}{8} + \frac{E[W]^2}{4} - \frac{E[W]}{4} + \frac{E[W]}{2} \\
-\nonumber & \frac{E[W]^2}{8} + \frac{E[W]^2}{4} - \frac{E[W]}{4} + \frac{E[W]}{2} - E[W] + \frac{p - 1}{p} = 0 \text{   $(*8)$}\\
+\nonumber & \frac{E[W]^2}{8} + \frac{E[W]^2}{4} - \frac{E[W]}{4} + \frac{E[W]}{2} - E[W] + \frac{p - 1}{p} = 0 \text{   $(\cdot 8)$}\\
 & 3E[W]^2 - 6E[W] - \frac{8(p - 1)}{p} = 0
 \end{align}
 
@@ -170,7 +170,7 @@ de TDP$_i$, obtemos \eqref{eq:A}.
 
 \begin{align} \label{eq:A}
 \nonumber A_i &= \sum_{j=1}^{R_i + 1} rtt_{ij} \\
-&=(R_i + 1) * rtt_{ij}
+&=(R_i + 1) \cdot  rtt_{ij}
 \end{align}
 
 Denotando RTT como o tempo médio de duração de uma rodada, temos que: $E[rtt]=RTT$. Considerando que a duração
@@ -178,17 +178,17 @@ de uma rodada (rtt) e o número de rodadas são variáveis independentes pode-se
 obtendo-se \eqref{eq:EA1}.
 
 \begin{equation} \label{eq:EA1}
-E[A] = (E[R] + 1) * RTT
+E[A] = (E[R] + 1) \cdot  RTT
 \end{equation}
 
 Subtituindo \eqref{eq:EW1} e \eqref{eq:EW3} em \eqref{eq:EA1} e desenvolvendo obtem-se \eqref{eq:EA2}.
 
 \begin{align} \label{eq:EA2}
-\nonumber E[A] &= (E[R] + 1) * RTT \\
-\nonumber &= \left(\frac{E[W]}{2} + 1\right) * RTT \\
-\nonumber &= \left(\left(\frac{1}{2} * \left(1 + \sqrt{\frac{8}{3p} - \frac{5}{3}}\right)\right) + 1\right) * RTT \\
-\nonumber &= \left(\frac{1}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} + 1\right) * RTT \\
-&= RTT * \left(\frac{3}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} \right)
+\nonumber E[A] &= (E[R] + 1) \cdot  RTT \\
+\nonumber &= \left(\frac{E[W]}{2} + 1\right) \cdot  RTT \\
+\nonumber &= \left(\left(\frac{1}{2} \cdot  \left(1 + \sqrt{\frac{8}{3p} - \frac{5}{3}}\right)\right) + 1\right) \cdot  RTT \\
+\nonumber &= \left(\frac{1}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} + 1\right) \cdot  RTT \\
+&= RTT \cdot  \left(\frac{3}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} \right)
 \end{align}
 
 Finalmente, substituindo \eqref{eq:EY2}, \eqref{eq:EW3} e \eqref{eq:EA2} em \eqref{eq:throughput} obtem-se em
@@ -196,6 +196,6 @@ Finalmente, substituindo \eqref{eq:EY2}, \eqref{eq:EW3} e \eqref{eq:EA2} em \eqr
 
 \begin{align} \label{eq:throughput2}
 \nonumber \overline{X} &= \frac{E[Y]}{E[A]} \\
-\nonumber &=\frac{\frac{1 - p}{p} + 1 + \sqrt{\frac{8}{3p} - \frac{5}{3}}}{RTT * \left(\frac{3}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} \right)} \\
-&=\frac{\frac{1}{p} + \sqrt{\frac{8}{3p} - \frac{5}{3}}}{RTT * \left(\frac{3}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} \right)}
+\nonumber &=\frac{\frac{1 - p}{p} + 1 + \sqrt{\frac{8}{3p} - \frac{5}{3}}}{RTT \cdot  \left(\frac{3}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} \right)} \\
+&=\frac{\frac{1}{p} + \sqrt{\frac{8}{3p} - \frac{5}{3}}}{RTT \cdot  \left(\frac{3}{2} + \sqrt{\frac{2}{3p} - \frac{5}{12}} \right)}
 \end{align}
