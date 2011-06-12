@@ -15,16 +15,21 @@ da respectiva dupla.
 ARQUIVOS		DESCRICAO
 tcp_model.tex		Arquivo concentrador, importa o conteudo de cada uma das 
 			suas secoes.
+
 modelo_periodico.tex	Arquivo contem a descricao da secao 5.3.1 referente a 
 			modelo periodico. Dever ser preferencialmente alterado 
 			por Sergio Luis e Inacio.
+
 ack_duplicado.tex	Arquivo contem a descricao da secao 5.3.2 - ack duplicado.
 			Deve ser preferencialmente alterado por Vinicius e Luis.
+
 timeout.tex		Arquivo contem a descricao da secao 5.3.2 - Timeout.
 			Deve ser preferencialmente alterado por Alisson e Anderson.
+
 janela_destino.tex	Arquivo contem a descricao da secao 5.3.2 - Receiver 
 			Limitation of Window Size. Deve ser preferencialmente 
 			alterado por Sergio Vieira e Vilson.
+
 figs			Diretorio onde devem ser colocadas figuras.
 makefile		Arquivo de build, basta executar './make' para gerar o pdf.
 *.sty			Templates Latex da SBC.
