@@ -46,7 +46,7 @@ Agora, precisamos saber as quantidades $Q, E[Y^{TO}] \  e \ E[Z^{TO}]$.
 \end{center}
 \end{figure}
 
-Nós começamos por derivar uma expressão para Q. Considere a rodada de pacotes onde uma indicação de perda ocorre; isso será referenciado como a penúltima rodada (ver figura \ref{fig4} - Nessa figura cada ACK reconhece pacotes individuais). Deixe $w$ ser o tamanho da janela de congestionamento. Os pacotes $f_1..f_w$ são transmitidos na penúltima rodada. Os pacotes $f_1..f_k$ são reconhecidos e o pacote $f_{k+1}$ é o primeiro a ser perdido (ou não reconhecido). Assume-se que quando um pacote é perdido, todos os outros na sequência e na mesma rodada também são perdidos. Assim, todos os pacotes que seguem $f_{k+1}$ na penúltima rodada também são perdidos. Entretanto, como os pacotes $f_1..f_k$ são reconhecidos, então outros $k$ pacotes $s_1..s_k$ são transmitidos na próxima rodada, que é referenciada como a última rodada. Esta rodada de pacotes pode ter outra perda, diga-se $s_{m+1}$. Assim, $s_{m+2}..s_k$ também são perdidos na última rodada. Os $m$ pacotes transmitidos com sucesso na última rodada são respondidos por ACKs para o pacote $f_k$, que são contados como ACKs duplicados. Dessa maneira, o número de ACKs duplicados é igual ao número de pacotes recebidos com sucesso na última rodada. Se o número de ACKs é maior do que três, então ocorre uma indicação de perda por ACKs duplicados, senão, um timeout ocorre. Em ambos os casos, o período atual entre as perdas, TDP, finaliza. Denota-se por $A(w,k)$ a probabilidade que os primeiros $k$ pacotes sejam reconhecidos numa rodada de $w$ pacotes, dado que existe uma sequência de uma ou mais perdas na rodada. Então:
+Nós começamos por derivar uma expressão para Q. Considere a rodada de pacotes onde uma indicação de perda ocorre; isso será referenciado como a penúltima rodada (ver figura \ref{fig4}, nessa figura cada ACK reconhece pacotes individuais). Deixe $w$ ser o tamanho da janela de congestionamento. Os pacotes $f_1..f_w$ são transmitidos na penúltima rodada. Os pacotes $f_1..f_k$ são reconhecidos e o pacote $f_{k+1}$ é o primeiro a ser perdido (ou não reconhecido). Assume-se que quando um pacote é perdido, todos os outros na sequência e na mesma rodada também são perdidos. Assim, todos os pacotes que seguem $f_{k+1}$ na penúltima rodada também são perdidos. Entretanto, como os pacotes $f_1..f_k$ são reconhecidos, então outros $k$ pacotes $s_1..s_k$ são transmitidos na próxima rodada, que é referenciada como a última rodada. Esta rodada de pacotes pode ter outra perda, diga-se $s_{m+1}$. Assim, $s_{m+2}..s_k$ também são perdidos na última rodada. Os $m$ pacotes transmitidos com sucesso na última rodada são respondidos por ACKs para o pacote $f_k$, que são contados como ACKs duplicados. Dessa maneira, o número de ACKs duplicados é igual ao número de pacotes recebidos com sucesso na última rodada. Se o número de ACKs é maior do que três, então ocorre uma indicação de perda por ACKs duplicados, senão, um timeout ocorre. Em ambos os casos, o período atual entre as perdas, TDP, finaliza. Denota-se por $A(w,k)$ a probabilidade que os primeiros $k$ pacotes sejam reconhecidos numa rodada de $w$ pacotes, dado que existe uma sequência de uma ou mais perdas na rodada. Então:
 
 $$A(w, k) = \frac{(1-p)^kp}{1-(1-p)^w} $$
 
@@ -179,7 +179,7 @@ $$ = - w(1-p)^{w-1} $$
 
 Portanto, 
 
-$$x = \lim_{p \to 0}\frac{\cancel{(1-p)^{w-1}}[(1-p)(-w-1) - (1-p)^4(-w-1) - 3(1-p)^{6-w} - 3(1-p)^{6-w}(1-(1-p)^{w-2})]}{- w\cancel{(1-p)^{w-1}}} $$
+$$\tiny{x = \lim_{p \to 0}\frac{\cancel{(1-p)^{w-1}}[(1-p)(-w-1) - (1-p)^4(-w-1) - 3(1-p)^{6-w} - 3(1-p)^{6-w}(1-(1-p)^{w-2})]}{- w\cancel{(1-p)^{w-1}}} }$$
 
 Fazendo $p = 0$, temos:
 
@@ -213,7 +213,7 @@ $$= \frac{(1-p)}{p}\cdot \sum_{k=1}^{\infty}kp^{k}$$
 $$= \frac{(1-p)}{p}\cdot \frac{p}{(1-p)^2}$$
 $$= \frac{1}{(1-p)}$$
 
-No próximo passo, nos concentramos no $E[Z^{TO}]$, a duração média de uma sequência de timeouts excluindo as restransmissões, que podem ser computadas de uma maneira parecida. Sabe-se que os primeiros seis timeouts em uma sequência tem o tamanho $2^{i-1}T_o$, $i = 1...6$, com todos os timeouts seguintes tendo tamanho $64T_o$. Então, a duração de uma sequência com $k$ timeouts é
+No próximo passo, nos concentramos no $E[Z^{TO}]$, a duração média de uma sequência de timeouts excluindo as retransmissões, que podem ser computadas de uma maneira parecida. Sabe-se que os primeiros seis timeouts em uma sequência tem o tamanho $2^{i-1}T_o$, $i = 1...6$, com todos os timeouts seguintes tendo tamanho $64T_o$. Então, a duração de uma sequência com $k$ timeouts é
 
 $$L_k = \begin{cases} 
   (2^k - 1)T_o,  \ \  para \  k \leq 6 \\
@@ -297,7 +297,7 @@ Portanto, temos que $E[Z^{TO}]$ é:
 
 $$E[Z^{TO}] = T_o(1-p) \cdot [\frac{1}{(1-p)} \cdot (1 + 2p + 4p^2 + 8p^3 + 16p^4 + 32p^5 - 63p^6) + \frac{1}{(1-p)} \cdot (\frac{p^6(127 - 63p)}{(1-p)})] $$
 $$ = T_o \cdot (1 + 2p + 4p^2 + 8p^3 + 16p^4 + 32p^5 - 63p^6 + \frac{p^6(127 - 63p)}{(1-p)}) $$
-$$ = \frac{T_o(1 - p +2p - 2p^2 + 4p^2 - 4p^3 + 8p^3 - 8p^4 + 16p^4 - 16p^5 + 32p^5 -32p^6 - 63p^6 + 63p^7 + 127p^6 - 63p^7)}{1-p} $$
+$$\textstyle{ = \frac{T_o(1 - p +2p - 2p^2 + 4p^2 - 4p^3 + 8p^3 - 8p^4 + 16p^4 - 16p^5 + 32p^5 -32p^6 - 63p^6 + 63p^7 + 127p^6 - 63p^7)}{1-p}}$$
 $$ = T_o \cdot \frac{1+p+2p^2 + 4p^3 + 8p^4 + 16p^5 + 32p^6}{1-p}$$
 
 Onde $f(p) = 1+p+2p^2 + 4p^3 + 8p^4 + 16p^5 + 32p^6$. Assim, 
